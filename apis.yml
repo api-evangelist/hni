@@ -4,6 +4,8 @@ url:
 modified: '2026-04-28'
 apis: []
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/hni-corporation
   - type: Website
     url: https://www.hni.com
 description: >-
