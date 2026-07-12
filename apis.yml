@@ -6,10 +6,14 @@ url:
 modified: '2026-04-28'
 apis: []
 common:
+  - type: DomainSecurity
+    url: security/hni-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/hni-corporation
   - type: Website
     url: https://www.hni.com
+  - url: https://www.hni.com/blog
+    type: Blog
 description: >-
   HNI is a performance-driven risk advisor that delivers insurance, benefits, and
   advisory strategies to help ambitious leaders boost performance.
