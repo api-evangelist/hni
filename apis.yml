@@ -1,46 +1,146 @@
-name: Hni
+name: HNI Corporation
 aid: hni
+specificationVersion: '0.23'
+position: Producing
+access: 3rd-Party
+created: '2026-04-28'
+modified: '2026-09-13'
+url: https://raw.githubusercontent.com/api-evangelist/hni/refs/heads/main/apis.yml
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hni.png
+description: >-
+  HNI Corporation (NYSE: HNI) is a manufacturer founded in 1944 and headquartered in Muscatine, Iowa,
+  built around two operating segments. Workplace Furnishings makes office seating, desks, storage,
+  tables, panel systems and ancillary furnishings sold through independent dealers under the HON,
+  Allsteel, Gunlocke, HBF and Kimball International brands. Residential Building Products is the hearth
+  business, operated by Hearth & Home Technologies under the Heatilator, Heat & Glo, Majestic, Monessen,
+  Quadra-Fire, Harman, SimpliFire and PelPro brands. HNI publishes no developer portal, REST API or
+  OpenAPI for either segment. Its one public machine-readable surface is the agent-commerce stack on the
+  Hearth & Home Technologies storefront at hearthnhome.com, which serves an llms.txt, a Universal
+  Commerce Protocol merchant profile and an anonymous MCP endpoint exposing 13 catalog, cart and
+  checkout tools.
+tags:
+  - Fortune 1000
+  - Manufacturing
+  - Office Furniture
+  - Workplace
+  - Building Products
+  - Hearth
+  - Retail
+  - E-Commerce
+  - Agent Commerce
+  - MCP
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+    url: http://apievangelist.com
 deliveryModel:
   model: unknown
   open_source: false
   commercial: false
-  callable_host: false
-  label: Delivery model not determined — needs a product licence on record
+  callable_host: true
+  label: Platform-hosted agent commerce endpoint on a company-owned host; no licensed API product on record
   confidence: low
   source:
-  - none
-  generated: '2026-08-28'
-  method: derived
-specificationVersion: '0.23'
+    - https://hearthnhome.com/api/ucp/mcp
+  generated: '2026-09-13'
+  method: probed
 accessModel:
-  pricing: unknown
-  onboarding: unknown
+  pricing: free
+  onboarding: self-service
   trial: false
-  try_now: false
-  public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  try_now: true
+  public: true
+  label: Open discovery, gated execution — tools/list is anonymous, tools/call needs an agent profile and a JWT
+  confidence: medium
+  generated: '2026-09-13'
+  method: probed
   source:
-  - {url: 'https://www.hni.com', status: 301, note: 'declared website redirects to https://www.acrisure.com/midwest — a different registrable domain (hni.com -> acrisure.com), possible rename or acquisition (probed 2026-09-03, roadmap#169)'}
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hni.png
-tags:
-  - Fortune 1000
-url: 
-  https://raw.githubusercontent.com/api-evangelist/hni/refs/heads/main/apis.yml
-modified: '2026-04-28'
-apis: []
+    - {url: 'https://hearthnhome.com/api/ucp/mcp', status: 200, note: 'JSON-RPC tools/list returned all 13 tools with full inputSchemas and no Authorization header; tools/call on the same endpoint returned -32000 AuthenticationRequired (a Shopify agent JWT) and -32001 invalid_profile_url (a fetchable meta.ucp-agent.profile URI) — discovery is open, execution is gated (probed 2026-09-13)'}
+    - {url: 'https://www.hni.com', status: 301, note: 'the previously recorded website hni.com 301s to acrisure.com/midwest — that is HNI Risk Services / Acrisure Midwest, a DIFFERENT company; HNI Corporation is www.hnicorp.com (probed 2026-09-13, roadmap#169)'}
+apis:
+  - aid: hni:hearth-home-agent-commerce
+    name: Hearth & Home Technologies Agent Commerce (UCP/MCP)
+    humanURL: https://hearthnhome.com/agents.md
+    baseURL: https://hearthnhome.com/api/ucp/mcp
+    tags:
+      - Agent Commerce
+      - MCP
+      - Catalog
+      - Cart
+      - Checkout
+    properties:
+      - type: MCPServer
+        url: mcp/hni-mcp.yml
+      - type: LLMsTxt
+        url: llms/hni-llms.txt
+      - type: Documentation
+        url: https://hearthnhome.com/agents.md
+      - type: Authentication
+        url: authentication/hni-authentication.yml
+      - type: OAuthScopes
+        url: scopes/hni-scopes.yml
+      - type: RateLimits
+        url: rate-limits/hni-rate-limits.yml
+      - type: ErrorCatalog
+        url: errors/hni-problem-types.yml
+      - type: DataModel
+        url: data-model/hni-data-model.yml
+      - type: Conventions
+        url: conventions/hni-conventions.yml
+      - type: Lifecycle
+        url: lifecycle/hni-lifecycle.yml
+    description: >-
+      The Hearth & Home Technologies storefront implements the Universal Commerce Protocol (UCP) over an
+      anonymous Model Context Protocol endpoint. A tools/list probe on 2026-09-13 returned 13 tools —
+      search_catalog, lookup_catalog, get_product, get_cart, create_cart, update_cart, cancel_cart,
+      get_checkout, create_checkout, update_checkout, complete_checkout, cancel_checkout and get_order —
+      each with a full JSON Schema inputSchema. Tool discovery is anonymous; tool execution requires a
+      fetchable UCP agent profile URI and a Shopify agent JWT. The runtime is Shopify's platform UCP
+      implementation served on HNI's own brand host against HNI's own catalog.
 common:
-  - type: DomainSecurity
-    url: security/hni-domain-security.yml
+  - type: Website
+    url: https://www.hnicorp.com
   - type: LinkedIn
     url: https://www.linkedin.com/company/hni-corporation
-  - type: Website
-    url: https://www.hni.com
-  - url: https://www.hni.com/blog
-    type: Blog
-description: >-
-  HNI is a performance-driven risk advisor that delivers insurance, benefits, and
-  advisory strategies to help ambitious leaders boost performance.
+  - type: PrivacyPolicy
+    url: https://www.hnicorp.com/privacy-policy
+  - type: TermsOfService
+    url: https://www.hnicorp.com/terms-of-use
+  - type: DomainSecurity
+    url: security/hni-domain-security.yml
+  - type: WellKnown
+    url: well-known/hni-well-known.yml
+  - type: LLMsTxt
+    url: llms/hni-llms.txt
+  - type: Conformance
+    url: conformance/hni-conformance.yml
+  - type: Authentication
+    url: authentication/hni-authentication.yml
+  - type: OAuthScopes
+    url: scopes/hni-scopes.yml
+  - type: Conventions
+    url: conventions/hni-conventions.yml
+  - type: Idempotency
+    url: conventions/hni-conventions.yml
+  - type: Lifecycle
+    url: lifecycle/hni-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/hni-rate-limits.yml
+  - type: Plans
+    url: plans/hni-plans-pricing.yml
+  - type: Packages
+    url: packages/hni-packages.yml
+  - type: ErrorCatalog
+    url: errors/hni-problem-types.yml
+  - type: DataModel
+    url: data-model/hni-data-model.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: MCPServer
+    url: mcp/hni-mcp.yml
+
+x-enrichment:
+  date: '2026-09-13'
+  status: enriched
+  artifacts_added: 21
+  pass: local-v3

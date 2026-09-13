@@ -1,0 +1,27 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  https://www.hnicorp.com/ (sitemap enumerated 2026-09-13), https://hearthnhome.com/llms.txt,
+  https://hearthnhome.com/.well-known/ucp
+note: >-
+  HNI Corporation sells furniture and hearth products, not API access. There is no developer plan, no
+  API pricing page, no metered tier and no paid access of any kind for the agent surface — the MCP
+  endpoint is anonymous and free to call. HNI's own commercial model is dealer- and retail-based:
+  workplace furnishings are quoted through independent dealers (www.hnicorp.com/where-to-buy/workplace)
+  and hearth products through dealers and the storefront. Recorded as zero rather than omitted.
+plan_count: 0
+plans: []
+api_pricing_published: false
+free_tier:
+  exists: true
+  description: >-
+    The UCP/MCP commerce endpoint answers catalog, cart and checkout tool calls with no credential and
+    no charge. What is priced is the merchandise in the cart, not the API call.
+  evidence:
+    url: https://hearthnhome.com/api/ucp/mcp
+    http_status: 200
+    probed: '2026-09-13'
+commercial_model:
+  workplace_furnishings: independent office-products dealers, wholesalers and direct/government sales
+  residential_building_products: hearth dealers and the hearthnhome.com storefront
+  reference: https://www.hnicorp.com/where-to-buy

@@ -1,0 +1,32 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, api.github.com, and the HNI Corporation public web surface, searched
+  2026-09-13
+note: >-
+  No first-party HNI Corporation client library exists in any public registry. Searches for hnicorp,
+  hni-api and hearthnhome on npm and PyPI all returned 404. No HNI GitHub organization publishes code:
+  github.com/HnICorp is an unrelated anime fansub group, github.com/HNI-Corporation has zero public
+  repositories, and github.com/Allsteel (website allsteeloffice.com) has zero public repositories. No
+  SDKs pointer was emitted because there is no SDK.
+package_count: 0
+packages: []
+registries_checked:
+  - registry: npm
+    queries: [hnicorp, hni-api, hearthnhome]
+    result: 404 on all
+    checked: '2026-09-13'
+  - registry: pypi
+    queries: [hnicorp, hni]
+    result: 404 on all
+    checked: '2026-09-13'
+  - registry: github
+    queries: [hnicorp, hni-corporation, honcompany, allsteel, hearthnhome]
+    result: >-
+      HnICorp (unrelated), HNI-Corporation (0 public repos), Allsteel (0 public repos),
+      honcompany (404), hearthnhome (404)
+    checked: '2026-09-13'
+client_guidance: >-
+  Agents call the surface with any MCP client over JSON-RPC 2.0. The UCP specification publishes an
+  OpenRPC schema at https://ucp.dev/2026-08-25/services/shopping/mcp.openrpc.json — that document
+  belongs to the UCP project, not to HNI, and is referenced here as integration guidance only.

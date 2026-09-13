@@ -1,0 +1,106 @@
+generated: '2026-09-13'
+method: probed
+source: https://hearthnhome.com/.well-known/openid-configuration
+docs: https://hearthnhome.com/agents.md
+note: >-
+  HNI Corporation publishes no developer portal and no OpenAPI, so no securityScheme could be derived.
+  This profile is built entirely from discovery documents fetched live from hearthnhome.com on
+  2026-09-13. Two distinct postures coexist on the same host.
+schemes:
+  - id: anonymous-discovery
+    type: none
+    applies_to: 'https://hearthnhome.com/api/ucp/mcp (method: tools/list)'
+    description: >-
+      Tool DISCOVERY is anonymous. tools/list returned HTTP 200 with the full 13-tool manifest and
+      complete inputSchemas, with no Authorization header.
+    evidence:
+      url: https://hearthnhome.com/api/ucp/mcp
+      http_status: 200
+      probed: '2026-09-13'
+  - id: ucp-agent-profile
+    type: agentIdentity
+    applies_to: 'https://hearthnhome.com/api/ucp/mcp (method: tools/call)'
+    description: >-
+      Tool EXECUTION requires `meta.ucp-agent.profile`, an absolute https URI the server fetches over
+      HTTP before dispatch. Omitting it returns JSON-RPC -32001 invalid_profile_url; supplying an
+      unreachable URI returns -32001 profile_unreachable. This is an identity assertion the agent must
+      actually publish, not a bearer secret.
+    evidence:
+      url: https://hearthnhome.com/api/ucp/mcp
+      http_status: 200
+      probed: '2026-09-13'
+      observed_error: '{"code":-32001,"message":"UCP discovery failed","data":{"code":"invalid_profile_url",...}}'
+  - id: shopify-agent-jwt
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    applies_to: 'https://hearthnhome.com/api/ucp/mcp (method: tools/call)'
+    description: >-
+      Beyond the agent profile, tools/call demands a valid Shopify agent JWT. An unauthenticated call
+      returns JSON-RPC -32000 "AuthenticationRequired" with the message "A valid JWT is required to call
+      <tool>. See https://shopify.dev/docs/agents/get-started/authentication". The endpoint is therefore
+      OPEN TO DISCOVERY BUT CLOSED TO EXECUTION — a distinction the llms.txt does not make.
+    docs: https://shopify.dev/docs/agents/get-started/authentication
+    evidence:
+      url: https://hearthnhome.com/api/ucp/mcp
+      http_status: 200
+      probed: '2026-09-13'
+  - id: shopify-customer-account-oidc
+    type: openIdConnect
+    applies_to: customer account data on hearthnhome.com
+    openIdConnectUrl: https://hearthnhome.com/.well-known/openid-configuration
+    issuer: https://shopify.com/authentication/67598516522
+    authorization_endpoint: https://shopify.com/authentication/67598516522/oauth/authorize
+    token_endpoint: https://shopify.com/authentication/67598516522/oauth/token
+    end_session_endpoint: https://shopify.com/authentication/67598516522/logout
+    jwks_uri: https://shopify.com/authentication/67598516522/.well-known/jwks.json
+    grant_types:
+      - authorization_code
+      - refresh_token
+      - 'urn:ietf:params:oauth:grant-type:jwt-bearer'
+    response_types:
+      - code
+    pkce:
+      required_methods:
+        - S256
+    token_endpoint_auth_methods:
+      - client_secret_basic
+      - client_secret_post
+    id_token_signing_alg:
+      - RS256
+    claims:
+      - iss
+      - sub
+      - aud
+      - exp
+      - iat
+      - nonce
+      - sid
+      - email
+      - email_verified
+    subject_types:
+      - public
+    description: >-
+      Shopify-operated customer account authentication. The authorization server lives on shopify.com,
+      not on an HNI host; hearthnhome.com publishes the discovery document and the RFC 9728 protected
+      resource metadata that points at it.
+    evidence:
+      url: https://hearthnhome.com/.well-known/openid-configuration
+      http_status: 200
+      probed: '2026-09-13'
+protected_resource_metadata:
+  present: true
+  url: https://hearthnhome.com/.well-known/oauth-protected-resource
+  resource: https://hearthnhome.com
+  authorization_servers:
+    - https://shopify.com/authentication/67598516522
+  bearer_methods_supported:
+    - header
+  rfc: RFC 9728
+dynamic_client_registration:
+  present: false
+  note: No registration_endpoint is advertised in the authorization server metadata.
+gaps:
+  - No authentication documentation exists on any HNI Corporation host; the only auth surface is the
+    Shopify platform discovery document on the storefront.
+  - www.hnicorp.com serves no /.well-known/security.txt and no developer or auth documentation.

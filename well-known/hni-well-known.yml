@@ -1,0 +1,129 @@
+generated: '2026-09-13'
+method: probed
+source: live HTTP probes of every host in apis.yml plus the HNI Corporation brand hosts
+note: >-
+  Nine named /.well-known/ paths were probed on six HNI Corporation hosts. Only hearthnhome.com (Hearth &
+  Home Technologies, HNI's residential building products storefront) serves real documents. The 200s on
+  www.hnicorp.com, www.hon.com, www.allsteeloffice.com and www.gunlocke.com are Imperva/Incapsula bot
+  interstitials — HTML carrying _Incapsula_Resource, not documents — and are recorded as misses. The
+  hearthnhome.com documents are Shopify-platform-issued (the OIDC/OAuth issuer is
+  https://shopify.com/authentication/67598516522, not an HNI host) but are served from a host HNI
+  Corporation controls and describe HNI's own storefront and catalog; attribution is recorded rather
+  than credited to HNI as authorship.
+hosts:
+  - host: hearthnhome.com
+    documents:
+      - path: /.well-known/ucp
+        status: 200
+        file: hni-hearthnhome-ucp.json
+        note: Universal Commerce Protocol merchant profile, version 2026-08-25
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: hni-hearthnhome-openid-configuration.json
+        note: OIDC discovery; issuer https://shopify.com/authentication/67598516522
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: hni-hearthnhome-oauth-authorization-server.json
+        note: RFC 8414 authorization server metadata
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        file: hni-hearthnhome-oauth-protected-resource.json
+        note: RFC 9728 protected resource metadata naming shopify.com as the authorization server
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.hnicorp.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/api-catalog
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/ucp
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.hon.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/api-catalog
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.allsteeloffice.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/api-catalog
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.gunlocke.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/api-catalog
+        status: 200
+        note: 'not a document — Imperva bot interstitial HTML'
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: hnicorp.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 301
+        note: redirects to www.hnicorp.com
+      - path: /.well-known/agent-card.json
+        status: 301
+      - path: /.well-known/agent.json
+        status: 301
+agent_card:
+  found: false
+  note: >-
+    /.well-known/agent-card.json and the legacy /.well-known/agent.json returned 404 on every HNI host
+    probed. No A2A agent card exists, so no a2a/ artifact and no AgentCard pointer were written.

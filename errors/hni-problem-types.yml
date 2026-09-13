@@ -1,0 +1,67 @@
+generated: '2026-09-13'
+method: probed
+source: live JSON-RPC error responses from https://hearthnhome.com/api/ucp/mcp, probed 2026-09-13
+note: >-
+  HNI publishes no error reference. Every entry below was observed by sending deliberately malformed or
+  unauthorized requests to the live endpoint and recording what came back verbatim. No 4xx/5xx OpenAPI
+  responses exist to derive from — there is no OpenAPI.
+format: jsonrpc-2.0
+format_note: >-
+  Errors are JSON-RPC 2.0 error objects, not RFC 9457 problem+json. The transport status stays HTTP 200
+  even when the call fails, so an agent MUST inspect the `error` member rather than the status code.
+envelope:
+  shape: '{"jsonrpc":"2.0","id":<id>,"error":{"code":<int>,"message":<string>,"data":<object|string>}}'
+  data_shape_variants:
+    - 'object: {code, content, continue_url}'
+    - 'string: a human-readable sentence'
+  note: >-
+    `data` is polymorphic — an object for UCP discovery failures and a bare string for authentication
+    failures. A client deserialising it into one type will break on the other.
+problem_types:
+  - code: -32001
+    message: UCP discovery failed
+    data_code: invalid_profile_url
+    meaning: >-
+      The request omitted `meta.ucp-agent.profile`, or it was not a usable URI. Returned even for an
+      unknown JSON-RPC method, because profile resolution runs before method dispatch.
+    remediation: >-
+      Send `meta.ucp-agent.profile` as an absolute, publicly fetchable https URI on every call.
+    observed_response: '{"code":-32001,"message":"UCP discovery failed","data":{"code":"invalid_profile_url","content":"Unable to fetch agent profile: Missing profile uri","continue_url":"https://hearth-home-hr.myshopify.com/"}}'
+    http_status: 200
+    probed: '2026-09-13'
+  - code: -32001
+    message: UCP discovery failed
+    data_code: profile_unreachable
+    meaning: >-
+      `meta.ucp-agent.profile` was a well-formed URI but the server could not fetch it. The agent
+      profile document must actually be served.
+    remediation: Publish the agent profile at the URI and make it reachable from Shopify's network.
+    observed_response: '{"code":-32001,"message":"UCP discovery failed","data":{"code":"profile_unreachable","content":"Unable to fetch agent profile: Http error","continue_url":"https://hearth-home-hr.myshopify.com/"}}'
+    http_status: 200
+    probed: '2026-09-13'
+  - code: -32000
+    message: AuthenticationRequired
+    meaning: >-
+      A JWT is required to invoke the named tool. Observed on tools/call for an unrecognised tool name;
+      the authentication gate fires before tool-name validation, so an unknown tool and an unauthorized
+      one are indistinguishable to the caller.
+    remediation: >-
+      Obtain a Shopify agent JWT per https://shopify.dev/docs/agents/get-started/authentication and send
+      it on the request.
+    observed_response: '{"code":-32000,"message":"AuthenticationRequired","data":"Unauthorized: A valid JWT is required to call no_such_tool. See https://shopify.dev/docs/agents/get-started/authentication for instructions on generating a token and authenticating your requests."}'
+    http_status: 200
+    probed: '2026-09-13'
+  - code: 429
+    message: rate limited
+    meaning: Per-IP rate limit exhausted on the MCP endpoint.
+    remediation: Back off and retry.
+    source: https://hearthnhome.com/llms.txt
+    observed: false
+    note: Documented in prose only; not observed during probing and not deliberately triggered.
+gaps:
+  - No published error reference on any HNI host.
+  - No stable machine-readable error taxonomy — the discriminator is `data.code`, which appears only on
+    the -32001 family.
+  - Transport status is always 200, so HTTP-level error handling is useless against this surface.
+  - An unknown tool name and an unauthenticated call return the same error, which makes client
+    misconfiguration hard to diagnose.

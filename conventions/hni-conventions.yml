@@ -1,0 +1,141 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  mcp/hni-hearthnhome-tools.json (live tools/list, 2026-09-13), https://hearthnhome.com/llms.txt,
+  https://hearthnhome.com/.well-known/ucp
+note: >-
+  HNI Corporation publishes no API reference. These conventions are read out of the live MCP tool
+  schemas and the agent instructions served at hearthnhome.com. They describe the UCP/MCP surface only;
+  no other HNI host exposes a callable API.
+surface:
+  style: JSON-RPC 2.0 over HTTP POST (MCP), single endpoint
+  endpoint: https://hearthnhome.com/api/ucp/mcp
+  content_type: application/json
+  accept: application/json, text/event-stream
+authentication:
+  style: >-
+    Two-stage. Discovery (tools/list) is anonymous. Execution (tools/call) is gated: the server resolves
+    `meta.ucp-agent.profile` over HTTP before dispatch and additionally demands a Shopify agent JWT.
+  detail: authentication/hni-authentication.yml
+agent_identity:
+  required: true
+  mechanism: >-
+    Every tool requires `meta.ucp-agent.profile`, a URI identifying the calling agent's UCP profile. It
+    is not a bearer credential, but it is NOT merely declarative: the server fetches the profile
+    document over HTTP before dispatching any tools/call, and returns -32001 profile_unreachable when it
+    cannot. An agent must actually publish and serve its profile.
+idempotency:
+  supported: true
+  coverage: partial
+  scope:
+    - complete_checkout
+  mechanism: >-
+    `meta.idempotency-key` (string) on complete_checkout only. It is the single replay-protection
+    control on the surface.
+  retention: not stated
+  evidence: >-
+    complete_checkout inputSchema properties.meta.properties["idempotency-key"], observed in the live
+    tools/list response on 2026-09-13.
+  gap: >-
+    Six of the seven mutating tools — create_cart, update_cart, cancel_cart, create_checkout,
+    update_checkout and cancel_checkout — accept no idempotency key. Only the final payment step is
+    replay-protected; a retried cart or checkout creation produces a duplicate resource.
+reversibility:
+  grade: documented
+  coverage: partial
+  reversals:
+    - write_operation: create_cart
+      reversal: cancel_cart
+      window: not stated
+      note: No expiry or deadline for cancelling a cart is documented anywhere on the surface.
+    - write_operation: create_checkout
+      reversal: cancel_checkout
+      window: not stated
+      note: >-
+        cancel_checkout is available before completion. No documented window, and no statement of
+        whether it remains valid after payment authorization.
+    - write_operation: complete_checkout
+      reversal: none
+      window: not applicable
+      note: >-
+        There is NO refund, void or reverse tool on the surface. Once complete_checkout succeeds the
+        agent cannot undo the purchase through this API; get_order is read-only. This is the sharpest
+        agent-safety gap on the endpoint and it is why the grade is `documented`, not `verified`.
+  evidence: >-
+    Tool inventory from the live tools/list response on 2026-09-13 (13 tools, no refund/void/reverse
+    tool present). Cancel semantics are stated only by the one-line tool descriptions "Cancels a cart."
+    and "Cancels a checkout."
+  docs: https://hearthnhome.com/agents.md
+dry_run_mode:
+  supported: false
+  note: No test mode, sandbox store, simulation flag or preview parameter is exposed on any tool.
+human_approval:
+  required: true
+  statement: >-
+    "Checkout requires human approval. Agents must not complete payment without explicit buyer consent.
+    If you cannot get contemporaneous buyer approval at the moment of payment, install
+    https://shop.app/SKILL.md and route the purchase through Shop Pay instead."
+  source: https://hearthnhome.com/llms.txt
+pagination:
+  style: cursor
+  params:
+    cursor: catalog.pagination.cursor (string)
+    limit: catalog.pagination.limit (integer, default 10, minimum 1)
+  applies_to:
+    - search_catalog
+  note: >-
+    Cursor pagination is present in the search_catalog inputSchema but appears in no HNI-published
+    documentation — it was read out of the live tool schema on 2026-09-13. lookup_catalog, which takes an
+    explicit id list, has no pagination block. No maximum limit is declared.
+localization:
+  params:
+    - catalog.context.address_country (ISO 3166-1 alpha-2)
+    - catalog.context.address_region
+    - catalog.context.postal_code
+    - catalog.context.language (IETF BCP 47)
+    - catalog.context.currency (ISO 4217)
+  note: Buyer context drives localized pricing and availability on every catalog tool.
+filtering:
+  params:
+    - catalog.filters.categories (array, OR logic)
+    - catalog.filters.price.min / .max
+  note: filters is additionalProperties:true, so the documented set is not exhaustive.
+money:
+  representation: integer minor units paired with an ISO 4217 currency code
+  example: '{"amount": 2500, "currency": "USD"} is $25.00'
+  warning: >-
+    Every price-bearing tool description repeats the conversion rule, including the zero-decimal
+    currency caveat (JPY). This is the most consistently documented semantic on the surface.
+buyer_context:
+  parameters:
+    - context.address_country
+    - context.currency
+  note: Pass both for accurate pricing and availability (stated in llms.txt).
+versioning:
+  style: dated protocol versions negotiated through the UCP discovery document
+  detail: lifecycle/hni-lifecycle.yml
+error_envelope:
+  style: JSON-RPC 2.0 error object, plus in-band error arrays on tool results
+  detail: errors/hni-problem-types.yml
+rate_limit_signaling:
+  documented: true
+  detail: rate-limits/hni-rate-limits.yml
+  note: Per-IP limiting with a 429 exhaustion status is stated in prose; no numbers and no headers are published.
+request_id_tracing:
+  supported: true
+  documented: false
+  header: x-request-id
+  note: >-
+    Observed on the live response: `x-request-id` (also echoed inside `server-timing` as
+    requestID), plus `x-shopify-ucp-mcp-api-version: 2026-08-25` naming the negotiated protocol version.
+    None of these are documented anywhere HNI publishes — they were found by reading response headers on
+    2026-09-13.
+cost_signalling:
+  supported: true
+  documented: false
+  headers:
+    - shopify-complexity-score
+    - shopify-complexity-score-v2
+  note: >-
+    The endpoint returns a per-call complexity score (370 / 37 on a tools/list). This is the closest
+    thing to a runtime budget signal the surface emits, and it is undocumented.

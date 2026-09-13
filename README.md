@@ -64,12 +64,28 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-This is a repository for tracking the APIs, SDKs, and other developer resources for HNI.
+This is a repository for tracking the APIs, SDKs, and other developer resources for HNI Corporation
+(NYSE: HNI) — the Muscatine, Iowa manufacturer of workplace furnishings (HON, Allsteel, Gunlocke, HBF,
+Kimball International) and residential building products (Hearth & Home Technologies: Heatilator,
+Heat & Glo, Majestic, Monessen, Quadra-Fire, Harman, SimpliFire, PelPro).
+
+> **Note on identity.** This profile previously recorded `hni.com` as the company website. That domain
+> 301s to `acrisure.com/midwest` and belongs to HNI Risk Services / Acrisure Midwest, a **different
+> company**. HNI Corporation is `hnicorp.com`. Corrected 2026-09-13.
 
 ## APIs
 
-No APIs have been documented yet. Check back for updates.
+HNI Corporation publishes no developer portal and no OpenAPI. Its one public machine-readable API
+surface is on the Hearth & Home Technologies storefront:
+
+- **Hearth & Home Technologies Agent Commerce (UCP/MCP)** — `https://hearthnhome.com/api/ucp/mcp`.
+  A Universal Commerce Protocol endpoint exposing 13 MCP tools for catalog search, cart and checkout.
+  Tool discovery is anonymous; tool execution requires a fetchable UCP agent profile and a Shopify
+  agent JWT. Probed 2026-09-13.
 
 ## Properties
 
-- [Website](https://www.hni.com)
+- [Website](https://www.hnicorp.com)
+- [Agent instructions](https://hearthnhome.com/agents.md)
+- [llms.txt](https://hearthnhome.com/llms.txt)
+- [UCP merchant profile](https://hearthnhome.com/.well-known/ucp)

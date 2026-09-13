@@ -1,0 +1,121 @@
+generated: '2026-09-13'
+method: derived
+source: mcp/hni-hearthnhome-tools.json (live tools/list inputSchemas, probed 2026-09-13)
+note: >-
+  Derived from the JSON Schema inputSchemas of the 13 MCP tools. There is no OpenAPI and no object
+  reference to cross-check against, so this graph reflects request shapes only — response schemas are
+  not published by tools/list and could not be observed, because tools/call is authentication-gated.
+entities:
+  - name: Product
+    id_field: catalog.id
+    description: A catalogue item on the Hearth & Home Technologies storefront.
+    surfaced_by: [search_catalog, lookup_catalog, get_product]
+  - name: Variant
+    description: A selectable configuration of a Product, addressed via catalog.selected.
+    surfaced_by: [lookup_catalog, get_product]
+  - name: Cart
+    id_field: id
+    description: A mutable collection of line items with buyer, fulfillment and discount context.
+    surfaced_by: [get_cart, create_cart, update_cart, cancel_cart]
+    fields: [line_items, buyer, context, attribution, fulfillment, discounts]
+  - name: Checkout
+    id_field: id
+    id_format: 'gid://shopify/Checkout/abc123'
+    description: A cart promoted to a payable transaction, carrying payment instruments and totals.
+    surfaced_by: [get_checkout, create_checkout, update_checkout, complete_checkout, cancel_checkout]
+    fields: [payment, line_items, buyer, context, attribution, cart_id, fulfillment, discounts]
+  - name: LineItem
+    description: A quantity of a Product/Variant inside a Cart or Checkout.
+  - name: Order
+    id_field: id
+    description: The record produced by a completed Checkout. Read-only on this surface.
+    surfaced_by: [get_order]
+  - name: Buyer
+    description: Identity and contact details attached to a Cart or Checkout.
+  - name: Address
+    description: Billing or shipping address.
+    fields: [street_address, extended_address, address_locality, address_region, postal_code, address_country, first_name]
+    standard: address_country is ISO 3166-1 alpha-2
+  - name: PaymentInstrument
+    description: A card, token or wallet instrument on a Checkout.
+    fields: [id, handler_id, type, billing_address, credential]
+    note: Apple Pay uses type "card" with an apple_pay_token credential and requires billing_address.
+  - name: PaymentHandler
+    description: The processor that generated a PaymentInstrument, referenced by handler_id.
+  - name: Discount
+    description: A promotion applied to a Cart or Checkout (UCP dev.ucp.shopping.discount capability).
+  - name: Fulfillment
+    description: Shipping method and destination (UCP dev.ucp.shopping.fulfillment capability).
+    note: The UCP profile declares method_combinations [["shipping"]] and no multi-destination support.
+  - name: Money
+    description: An integer amount in ISO 4217 minor units paired with a currency code.
+    example: '{"amount": 2500, "currency": "USD"}'
+  - name: AgentProfile
+    description: The calling agent's UCP profile, referenced by meta.ucp-agent.profile and fetched by the server.
+relationships:
+  - from: Cart
+    to: LineItem
+    kind: has_many
+    via: cart.line_items
+  - from: Cart
+    to: Buyer
+    kind: has_one
+    via: cart.buyer
+  - from: Cart
+    to: Fulfillment
+    kind: has_one
+    via: cart.fulfillment
+  - from: Cart
+    to: Discount
+    kind: has_many
+    via: cart.discounts
+  - from: Checkout
+    to: Cart
+    kind: belongs_to
+    via: checkout.cart_id
+  - from: Checkout
+    to: LineItem
+    kind: has_many
+    via: checkout.line_items
+  - from: Checkout
+    to: PaymentInstrument
+    kind: has_many
+    via: checkout.payment.instruments
+  - from: Checkout
+    to: Buyer
+    kind: has_one
+    via: checkout.buyer
+  - from: Checkout
+    to: Fulfillment
+    kind: has_one
+    via: checkout.fulfillment
+  - from: Checkout
+    to: Discount
+    kind: has_many
+    via: checkout.discounts
+  - from: PaymentInstrument
+    to: Address
+    kind: has_one
+    via: instrument.billing_address
+  - from: PaymentInstrument
+    to: PaymentHandler
+    kind: belongs_to
+    via: instrument.handler_id
+  - from: Order
+    to: Checkout
+    kind: belongs_to
+    via: produced by complete_checkout
+  - from: LineItem
+    to: Product
+    kind: belongs_to
+    via: product/variant identifier
+id_conventions:
+  - format: 'gid://shopify/<Type>/<id>'
+    example: 'gid://shopify/Checkout/abc123'
+    note: >-
+      Identifiers are Shopify global IDs. They are stated explicitly for Checkout; cart, order and
+      product identifiers are typed only as `string` in the schemas.
+lifecycle_path: Product -> Cart -> Checkout -> Order
+lifecycle_note: >-
+  The path is one-way on this surface. Cart and Checkout can be cancelled; Order cannot be reversed —
+  there is no refund, void or return tool. See conventions/hni-conventions.yml reversibility.

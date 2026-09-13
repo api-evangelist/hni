@@ -1,0 +1,36 @@
+generated: '2026-09-13'
+method: probed
+source: https://hearthnhome.com/.well-known/oauth-authorization-server
+note: >-
+  Scopes are read verbatim from the scopes_supported array of the authorization server metadata served
+  at hearthnhome.com. HNI publishes no scope reference page; the authorization server is operated by
+  Shopify. No OpenAPI exists, so derive-oauth-scopes.py produced nothing and this file was written from
+  the live discovery document instead.
+issuer: https://shopify.com/authentication/67598516522
+flows:
+  authorization_code:
+    authorizationUrl: https://shopify.com/authentication/67598516522/oauth/authorize
+    tokenUrl: https://shopify.com/authentication/67598516522/oauth/token
+    pkce: S256
+scopes:
+  - name: openid
+    description: OpenID Connect — request an ID token identifying the signed-in customer.
+  - name: email
+    description: Release the customer's email address and email_verified claim.
+  - name: customer-account-api:full
+    description: >-
+      Full access to the Shopify Customer Account API for the signed-in customer of the
+      hearthnhome.com store.
+  - name: customer-account-mcp-api:full
+    description: >-
+      Full access to the customer-account MCP API for the signed-in customer — the authenticated
+      counterpart to the anonymous UCP commerce endpoint.
+scope_count: 4
+granularity: coarse
+granularity_note: >-
+  Two of the four scopes are `:full` grants. There is no read/write or per-resource split, so an agent
+  authorized for customer account data receives the whole account surface.
+evidence:
+  url: https://hearthnhome.com/.well-known/oauth-authorization-server
+  http_status: 200
+  probed: '2026-09-13'

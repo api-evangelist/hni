@@ -1,0 +1,117 @@
+generated: '2026-09-13'
+method: probed
+source: https://hearthnhome.com/api/ucp/mcp
+name: Hearth & Home Technologies Agent Commerce MCP Server
+status: live
+company: HNI Corporation
+operating_company: Hearth & Home Technologies (HNI Residential Building Products segment)
+deployment:
+  mode: remote
+  endpoint: https://hearthnhome.com/api/ucp/mcp
+  auth: oauth
+  auth_note: >-
+    Two-stage. tools/list is ANONYMOUS — the full 13-tool manifest with inputSchemas came back with no
+    credential. tools/call is GATED: it requires a fetchable `meta.ucp-agent.profile` URI and a valid
+    Shopify agent JWT (JSON-RPC -32000 AuthenticationRequired otherwise, pointing at
+    https://shopify.dev/docs/agents/get-started/authentication). Discovery open, execution closed.
+  verified: probed
+discovery:
+  - url: https://hearthnhome.com/llms.txt
+    status: 200
+    note: names the MCP endpoint and the UCP discovery document
+  - url: https://hearthnhome.com/agents.md
+    status: 200
+    note: canonical agent-facing description; llms.txt mirrors it
+  - url: https://hearthnhome.com/.well-known/ucp
+    status: 200
+    note: UCP merchant profile declaring transport "mcp" and the endpoint
+authorship:
+  authored_by: platform
+  platform: Shopify
+  note: >-
+    The server is Shopify's Universal Commerce Protocol implementation, served on a host HNI Corporation
+    controls (hearthnhome.com) and bound to HNI's own product catalog. The UCP profile canonicalises the
+    endpoint to https://hearth-home-hr.myshopify.com/api/ucp/mcp, which is the same store. HNI did not
+    author the tool set; it did deploy the storefront that exposes it.
+protocol:
+  transport: streamable-http (JSON-RPC 2.0 over POST)
+  ucp_versions:
+    - '2026-08-25'
+    - '2026-04-08'
+    - '2026-01-23'
+  ucp_current: '2026-08-25'
+  schema: https://ucp.dev/2026-08-25/services/shopping/mcp.openrpc.json
+probe:
+  fetched: '2026-09-13'
+  method: POST
+  request: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  http_status: 200
+  authenticated: false
+  tool_count: 13
+  execution_probe:
+    method: tools/call
+    authenticated: false
+    result: 'JSON-RPC -32000 AuthenticationRequired / -32001 UCP discovery failed'
+    note: Tool execution could not be exercised anonymously; see errors/hni-problem-types.yml.
+  raw: mcp/hni-hearthnhome-tools.json
+tools:
+  - name: search_catalog
+    category: catalog
+    description: Search for products from the online store, hosted on Shopify.
+  - name: lookup_catalog
+    category: catalog
+    description: Look up multiple products or variants by identifier.
+  - name: get_product
+    category: catalog
+    description: Retrieve complete product detail by identifier. Returns a singular product.
+  - name: get_cart
+    category: cart
+    description: Get the cart contents.
+  - name: create_cart
+    category: cart
+    description: Creates a new cart.
+  - name: update_cart
+    category: cart
+    description: Perform updates to a cart.
+  - name: cancel_cart
+    category: cart
+    description: Cancels a cart.
+  - name: get_checkout
+    category: checkout
+    description: Returns checkout details including line items, totals, discounts and taxes.
+  - name: create_checkout
+    category: checkout
+    description: Creates a checkout.
+  - name: update_checkout
+    category: checkout
+    description: Updates a checkout.
+  - name: complete_checkout
+    category: checkout
+    description: Completes a checkout; returns order ID, Thank You Page URL, or errors.
+  - name: cancel_checkout
+    category: checkout
+    description: Cancels a checkout.
+  - name: get_order
+    category: order
+    description: Get the details of an order.
+capabilities:
+  - dev.ucp.shopping.catalog.search
+  - dev.ucp.shopping.catalog.lookup
+  - dev.ucp.shopping.cart
+  - dev.ucp.shopping.checkout
+  - dev.ucp.shopping.order
+  - dev.ucp.shopping.fulfillment
+  - dev.ucp.shopping.discount
+constraints:
+  - Checkout requires contemporaneous human approval; agents must not complete payment without explicit
+    buyer consent (stated in llms.txt).
+  - The MCP endpoint is rate-limited per IP; back off on 429 (stated in llms.txt).
+  - Every tools/call requires a `meta.ucp-agent.profile` URI that the server fetches over HTTP before
+    dispatch; an unreachable profile is rejected with -32001 profile_unreachable.
+  - tools/call additionally requires a Shopify agent JWT.
+  - complete_checkout accepts `meta.idempotency-key`; no other mutating tool does.
+  - There is no refund, void or reverse tool — a completed checkout cannot be undone through this API.
+tool_crosswalk: null
+tool_crosswalk_note: >-
+  No tool crosswalk was written: HNI publishes no OpenAPI and no GraphQL endpoint, so there is nothing to
+  bind the MCP tools to. The crosswalk is emitted only when a second contract surface exists.

@@ -1,0 +1,44 @@
+generated: '2026-09-13'
+method: searched
+source: https://hearthnhome.com/llms.txt
+note: >-
+  The only published rate-limit statement HNI serves is one prose sentence in the agent instructions at
+  hearthnhome.com. No numeric limit, no window, no burst allowance and no response headers are
+  documented, so limit_count is an honest zero.
+limit_count: 0
+limits: []
+documented_behaviour:
+  scope: per-IP
+  statement: 'The MCP endpoint is rate-limited per IP. Back off on 429 responses.'
+  exhaustion_status: 429
+  source: https://hearthnhome.com/llms.txt
+headers:
+  documented: []
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header is documented anywhere HNI publishes.
+  observed:
+    - header: shopify-complexity-score
+      example: '370'
+      note: >-
+        Per-call cost score returned on every response. Undocumented, but it is the only quantitative
+        budget signal the endpoint emits — an agent can track cumulative complexity even though it is
+        never told the ceiling.
+    - header: shopify-complexity-score-v2
+      example: '37'
+    - header: x-request-id
+      example: 98c301df-79d4-4a8d-b6e0-546c589fb0c7-1789302129
+      note: Correlation identifier, useful when reporting a throttle.
+  observed_probe:
+    url: https://hearthnhome.com/api/ucp/mcp
+    method: POST tools/list
+    http_status: 200
+    probed: '2026-09-13'
+observed: []
+observed_note: >-
+  A single unauthenticated tools/list call returned HTTP 200 on 2026-09-13 carrying complexity-score
+  headers but no RateLimit-*/Retry-After header. The endpoint was not load-probed and no 429 was
+  deliberately triggered.
+gap: >-
+  Rate limiting is asserted but unquantified and unsignalled. This is the weakest runtime contract on
+  the surface: an agent cannot plan concurrency, and cannot distinguish a throttle from an outage
+  without a Retry-After.
