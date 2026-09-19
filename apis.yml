@@ -27,6 +27,17 @@ tags:
   - Hearth
   - Retail
   - E-Commerce
+  - Agentic Commerce
+  - MCP
+tags_raw:
+  - Fortune 1000
+  - Manufacturing
+  - Office Furniture
+  - Workplace
+  - Building Products
+  - Hearth
+  - Retail
+  - E-Commerce
   - Agent Commerce
   - MCP
 maintainers:
@@ -63,6 +74,12 @@ apis:
     humanURL: https://hearthnhome.com/agents.md
     baseURL: https://hearthnhome.com/api/ucp/mcp
     tags:
+      - Agentic Commerce
+      - MCP
+      - Catalog
+      - Cart
+      - Checkout
+    tags_raw:
       - Agent Commerce
       - MCP
       - Catalog
