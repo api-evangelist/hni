@@ -1,7 +1,9 @@
 ---
 title: HNI Corporation
 url: https://www.hnicorp.com/
-date: '2026-05-25'
+published: ''
+date_basis: harvested
+harvested: '2026-05-25'
 query: '"HNI" press release artificial intelligence'
 position: 4
 source: serpapi-google

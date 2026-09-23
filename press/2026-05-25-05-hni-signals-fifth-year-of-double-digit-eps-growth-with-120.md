@@ -1,7 +1,9 @@
 ---
 title: HNI signals fifth year of double-digit EPS growth with $120 ...
 url: https://seekingalpha.com/news/4557045-hni-signals-fifth-year-of-double-digit-eps-growth-with-120m-synergy-target-following
-date: '2026-05-25'
+published: ''
+date_basis: harvested
+harvested: '2026-05-25'
 query: '"HNI" press release artificial intelligence'
 position: 5
 source: serpapi-google
