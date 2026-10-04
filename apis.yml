@@ -1,4 +1,4 @@
-name: HNI Corporation
+name: HNI
 aid: hni
 specificationVersion: '0.23'
 position: Producing
@@ -114,6 +114,9 @@ apis:
       each with a full JSON Schema inputSchema. Tool discovery is anonymous; tool execution requires a
       fetchable UCP agent profile URI and a Shopify agent JWT. The runtime is Shopify's platform UCP
       implementation served on HNI's own brand host against HNI's own catalog.
+    x-surface: platform-generated
+    x-platform: shopify
+    x-platform-surface: ucp
 common:
   - type: Website
     url: https://www.hnicorp.com
@@ -161,3 +164,4 @@ x-enrichment:
   status: enriched
   artifacts_added: 21
   pass: local-v3
+x-legal-name: HNI Corporation
