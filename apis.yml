@@ -4,7 +4,7 @@ specificationVersion: '0.23'
 position: Producing
 access: 3rd-Party
 created: '2026-04-28'
-modified: '2026-09-13'
+modified: '2026-10-06'
 url: https://raw.githubusercontent.com/api-evangelist/hni/refs/heads/main/apis.yml
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hni.png
 description: >-
@@ -118,6 +118,8 @@ apis:
     x-platform: shopify
     x-platform-surface: ucp
 common:
+  - url: https://www.hnicorp.com/rss.xml
+    type: BlogRSS
   - type: Website
     url: https://www.hnicorp.com
   - type: LinkedIn
