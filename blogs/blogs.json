@@ -2,11 +2,14 @@
   "repo": "hni",
   "feeds": [
     {
-      "source": "https://www.hni.com/blog",
-      "error": "TimeoutError"
+      "source": "https://www.hnicorp.com/rss.xml",
+      "feed_url": "https://www.hnicorp.com/rss.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
     }
   ],
-  "fetched": "2026-09-06T19:17:18Z",
+  "fetched": "2026-10-10T13:15:00Z",
   "post_count": 28,
   "feed_nature": "vendor-blog",
   "feed_nature_basis": "path_blog",
