@@ -64,28 +64,112 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-This is a repository for tracking the APIs, SDKs, and other developer resources for HNI Corporation
-(NYSE: HNI) — the Muscatine, Iowa manufacturer of workplace furnishings (HON, Allsteel, Gunlocke, HBF,
-Kimball International) and residential building products (Hearth & Home Technologies: Heatilator,
-Heat & Glo, Majestic, Monessen, Quadra-Fire, Harman, SimpliFire, PelPro).
+HNI Corporation (NYSE: HNI) is a manufacturer founded in 1944 and headquartered in Muscatine, Iowa, built around two operating segments. Workplace Furnishings makes office seating, desks, storage, tables, panel systems and ancillary furnishings sold through independent dealers under the HON, Allsteel, Gunlocke, HBF and Kimball International brands. Residential Building Products is the hearth business, operated by Hearth & Home Technologies under the Heatilator, Heat & Glo, Majestic, Monessen, Quadra-Fire, Harman, SimpliFire and PelPro brands. HNI publishes no developer portal, REST API or OpenAPI for either segment. Its one public machine-readable surface is the agent-commerce stack on the Hearth & Home Technologies storefront at hearthnhome.com, which serves an llms.txt, a Universal Commerce Protocol merchant profile and an anonymous MCP endpoint exposing 13 catalog, cart and checkout tools.
 
-> **Note on identity.** This profile previously recorded `hni.com` as the company website. That domain
-> 301s to `acrisure.com/midwest` and belongs to HNI Risk Services / Acrisure Midwest, a **different
-> company**. HNI Corporation is `hnicorp.com`. Corrected 2026-09-13.
+**Areas:** Fortune 1000 · Manufacturing · Office Furniture · Workplace · Building Products · Hearth · Retail · E-Commerce · Agentic Commerce · MCP
 
-## APIs
+## HNI on APIs.io
 
-HNI Corporation publishes no developer portal and no OpenAPI. Its one public machine-readable API
-surface is on the Hearth & Home Technologies storefront:
+Everything profiled for HNI is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/hni/](https://apis.io/providers/hni/)** — or go straight to one of the APIs or properties below.
 
-- **Hearth & Home Technologies Agent Commerce (UCP/MCP)** — `https://hearthnhome.com/api/ucp/mcp`.
-  A Universal Commerce Protocol endpoint exposing 13 MCP tools for catalog search, cart and checkout.
-  Tool discovery is anonymous; tool execution requires a fetchable UCP agent profile and a Shopify
-  agent JWT. Probed 2026-09-13.
+### APIs (1)
 
-## Properties
+- [Hearth & Home Technologies Agent Commerce (UCP/MCP)](https://apis.io/apis/hni/hearth-home-agent-commerce/) — The Hearth & Home Technologies storefront implements the Universal Commerce Protocol (UCP) over an anonymous Model Context Protocol endpoint. A tools/list…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Hearth & Home Technologies Agent Commerce MCP Server](https://apis.io/servers/hni/hearth-home-technologies-agent-commerce-mcp-server/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Hni Authentication](https://apis.io/security/hni/hni-authentication/)
+- [Hni Domain Security](https://apis.io/security/hni/hni-domain-security/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Hni Scopes](https://apis.io/scopes/hni/hni-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Hni Plans Pricing](https://apis.io/plans/hni/hni-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Hni Rate Limits](https://apis.io/rate-limits/hni/hni-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.hnicorp.com)
-- [Agent instructions](https://hearthnhome.com/agents.md)
-- [llms.txt](https://hearthnhome.com/llms.txt)
-- [UCP merchant profile](https://hearthnhome.com/.well-known/ucp)
+- [Terms of service](https://www.hnicorp.com/terms-of-use)
+- [Privacy policy](https://www.hnicorp.com/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 16.0** — emerging · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 23.2 |
+| Access clarity | 0.0 |
+
+**Agent readiness 27.0** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | platform (partial credit) |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 26.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/hni/](https://apis.io/providers/hni/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for HNI: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/hni/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
